@@ -25,45 +25,49 @@ if __name__ == '__main__':
     s = serial.Serial(port,buand)
     try:
         while True:
-            time.sleep(0.1)
+            s.write(bytes.fromhex("01 03 00 00 00 02 C4 0B"))
+            time.sleep(0.5)
             count = s.inWaiting()
-            if count > 0:
-                id +=1
-                local_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                data = s.read(count)
-         
-                xdata={
-                    'id':'JD001',
-                    'type':'double',
-                    'value':'0.001'
-                }
-                sql = "insert into serial_data(id,create_date,parse_data,receive_data) values('%s','%s','%s','%s')"%(
-                    uuid.uuid4(),
-                    local_time, 
-                    requests.post(url,data=xdata).text,
-                    "JD001-" +str(data,'utf-8'))
-               
-                cursor.execute(sql)
+            while count < 10:
+                time.sleep(1)
+                count = s.inWaiting()
 
-                ydata={
-                    'id':'JD002',
-                    'type':'double',
-                    'value':'0.002'
-                }
-                sql = "insert into serial_data(id,create_date,parse_data,receive_data) values('%s','%s','%s','%s')"%(
-                    uuid.uuid4(),
-                    local_time, 
-                    requests.post(url,data=ydata).text, 
-                    "JD002-" + str(data,'utf-8'))
-               
-                cursor.execute(sql)
-                db.commit()
-                if data != b'':
-                    print("receive:", data)
-                    s.write(data)
-                else:
-                    s.write(hexsend(data))
-       
+            id +=1
+            local_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            data = s.read(count)
+        
+            xdata={
+                'id':'JD001',
+                'type':'double',
+                'value':'0.001'
+            }
+            sql = "insert into serial_data(id,create_date,parse_data,receive_data) values('%s','%s','%s','%s')"%(
+                uuid.uuid4(),
+                local_time, 
+                requests.post(url,data=xdata).text,
+                "JD001-" +str(data,'utf-8'))
+            
+            cursor.execute(sql)
+
+            ydata={
+                'id':'JD002',
+                'type':'double',
+                'value':'0.002'
+            }
+            sql = "insert into serial_data(id,create_date,parse_data,receive_data) values('%s','%s','%s','%s')"%(
+                uuid.uuid4(),
+                local_time, 
+                requests.post(url,data=ydata).text, 
+                "JD002-" + str(data,'utf-8'))
+            
+            cursor.execute(sql)
+            db.commit()
+            if data != b'':
+                print("receive:", data)
+                s.write(data)
+            else:
+                s.write(bytes.fromhex(data))
+        
     except KeyboardInterrupt:
         print("exit")
 
