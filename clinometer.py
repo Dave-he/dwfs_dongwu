@@ -13,9 +13,6 @@ buand = 9600
 
 url = "http://dwb.maplebim.com/data/upload"
 
-def hexsend(string_data=''):
-    return string_data.decode("hex")
-
 if __name__ == '__main__':
     id = 0
     db = pdb.connect(
