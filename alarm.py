@@ -7,7 +7,7 @@ import time
 import pymysql as pdb
 import uuid
 
-port = 'com10'
+port = 'com2'
 buand = 9600
 
 
@@ -42,8 +42,10 @@ def start():
 def stop():
     msg ='7E FF 06 3A 00 00 01 EF 00 00 00 7E FF 06 16 00 00 00 EF'
     sendMessage(msg)
+    time.sleep(2)
+    sendMessage(msg)
 
 if __name__ == '__main__':
-    start()
+    # start()
     time.sleep(1)
     stop()

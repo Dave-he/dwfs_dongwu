@@ -24,7 +24,7 @@ if __name__ == '__main__':
     s = serial.Serial(port,buand)
     try:
         while True:
-            s.write(bytes.fromhex("01 03 00 00 00 02 C4 0B"))
+            s.write(bytes.fromhex("FE 04 00 00 00 10 E5 C9"))
             time.sleep(0.1)
             count = s.inWaiting()
             if count > 0:
